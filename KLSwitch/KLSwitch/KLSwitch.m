@@ -244,10 +244,6 @@ typedef enum {
     [_thumb.layer setBorderWidth: 0.5];
     [_thumb.layer setBorderColor: [self.thumbBorderColor CGColor]];
     [_thumb.layer setCornerRadius: roundedCornerRadius];
-    [_thumb.layer setShadowColor: [[UIColor grayColor] CGColor]];
-    [_thumb.layer setShadowOffset: CGSizeMake(0, 3)];
-    [_thumb.layer setShadowOpacity: 0.40f];
-    [_thumb.layer setShadowRadius: 0.8];
 }
 
 #pragma mark - UIGestureRecognizer implementations
@@ -317,7 +313,20 @@ typedef enum {
 }
 
 - (void) setOn:(BOOL)on {
-    [self setOn: on animated: NO];
+    //Cancel notification to parent if attempting to set to current state
+    if (_on == on) {
+        return;
+    }
+    
+    //Move the thumb to the new position
+    [self setThumbOn: on
+            animated: NO];
+    
+    //Animate the contrast view of the track
+    [self.track setOn: on
+             animated: NO];
+    
+    _on = on;
 }
 
 - (void) setLocked:(BOOL)locked {
